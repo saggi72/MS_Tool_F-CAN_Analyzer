@@ -1,0 +1,632 @@
+{
+    "vehicle_model": "VF Limo",
+    "dbc_file": "05_DCAN_SOP_5.0.7.dbc",
+    "functional_id": "0x7DF",
+    "ecu_count": 16,
+    "ecus": {
+        "BCM": {
+            "request_id": "0x681",
+            "response_id": "0x601",
+            "request_message": "BCM_DiagReq",
+            "response_message": "BCM_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_BCM.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "CCH": {
+            "request_id": "0x694",
+            "response_id": "0x614",
+            "request_message": "CCH_DiagReq",
+            "response_message": "CCH_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/lev01_boot.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "FMCU": {
+            "request_id": "0x69B",
+            "response_id": "0x61B",
+            "request_message": "FMCU_DiagReq",
+            "response_message": "FMCU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_FMCU.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "WCBS": {
+            "request_id": "0x6A9",
+            "response_id": "0x629",
+            "request_message": "WCBS_DiagReq",
+            "response_message": "WCBS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_WCBS.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EPS": {
+            "request_id": "0x6A8",
+            "response_id": "0x628",
+            "request_message": "EPS_DiagReq",
+            "response_message": "EPS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_EPS.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EKS_SS": {
+            "request_id": "0x690",
+            "response_id": "0x610",
+            "request_message": "EKS_SS_DiagReq",
+            "response_message": "EKS_SS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_EKS.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "BMS": {
+            "request_id": "0x693",
+            "response_id": "0x613",
+            "request_message": "BMS_DiagReq",
+            "response_message": "BMS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_BMS.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "PTC": {
+            "request_id": "0x6C6",
+            "response_id": "0x646",
+            "request_message": "PTC_DiagReq",
+            "response_message": "PTC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_PTC.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "CVC": {
+            "request_id": "0x682",
+            "response_id": "0x602",
+            "request_message": "CVC_DiagReq",
+            "response_message": "CVC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_CVC.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EVCC": {
+            "request_id": "0x69F",
+            "response_id": "0x61F",
+            "request_message": "EVCC_DiagReq",
+            "response_message": "EVCC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_EVCC.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "PDU": {
+            "request_id": "0x6BD",
+            "response_id": "0x63D",
+            "request_message": "PDU_DiagReq",
+            "response_message": "PDU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_PDU.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "ACU": {
+            "request_id": "0x688",
+            "response_id": "0x608",
+            "request_message": "ACU_DiagReq",
+            "response_message": "ACU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_ACU.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "IVI": {
+            "request_id": "0x684",
+            "response_id": "0x604",
+            "request_message": "IVI_DiagReq",
+            "response_message": "IVI_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_IVI.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "CCU": {
+            "request_id": "0x689",
+            "response_id": "0x609",
+            "request_message": "CCU_DiagReq",
+            "response_message": "CCU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_CCU.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "AVAS": {
+            "request_id": "0x6AA",
+            "response_id": "0x62A",
+            "request_message": "AVAS_DiagReq",
+            "response_message": "AVAS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_AVAS.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "PDU_OBC": {
+            "request_id": "0x6BE",
+            "response_id": "0x63E",
+            "request_message": "PDU_OBC_DiagReq",
+            "response_message": "PDU_OBC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/LIMO7/SeednKey_LIMO_PDU.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        }
+    }
+}

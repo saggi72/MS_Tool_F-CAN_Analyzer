@@ -1,0 +1,593 @@
+{
+    "vehicle_model": "VF5",
+    "dbc_file": "09-VF5_Diag_CAN_Matrix_v1.1.0.dbc",
+    "functional_id": "0x6FF",
+    "ecu_count": 15,
+    "ecus": {
+        "ACM": {
+            "request_id": "0x688",
+            "response_id": "0x608",
+            "request_message": "ACM_DiagReq",
+            "response_message": "ACM_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/ACM_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "BCM": {
+            "request_id": "0x681",
+            "response_id": "0x601",
+            "request_message": "BCM_DiagReq",
+            "response_message": "BCM_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/BCM_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "BSD": {
+            "request_id": "0x6C0",
+            "response_id": "0x640",
+            "request_message": "BSD_DiagReq",
+            "response_message": "BSD_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/BSD_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "ESC": {
+            "request_id": "0x6A9",
+            "response_id": "0x629",
+            "request_message": "ESC_DiagReq",
+            "response_message": "ESC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/ESC_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EPS": {
+            "request_id": "0x6A8",
+            "response_id": "0x628",
+            "request_message": "EPS_DiagReq",
+            "response_message": "EPS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/EPS_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EKS": {
+            "request_id": "0x690",
+            "response_id": "0x610",
+            "request_message": "EKS_DiagReq",
+            "response_message": "EKS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/EKS_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "BMS": {
+            "request_id": "0x693",
+            "response_id": "0x613",
+            "request_message": "BMS_DiagReq",
+            "response_message": "BMS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/BMS_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "PDU": {
+            "request_id": "0x6BD",
+            "response_id": "0x63D",
+            "request_message": "PDU_DiagReq",
+            "response_message": "PDU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/PDU_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EDS": {
+            "request_id": "0x69B",
+            "response_id": "0x61B",
+            "request_message": "EDS_DiagReq",
+            "response_message": "EDS_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/EDS_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "EAC": {
+            "request_id": "0x6F5",
+            "response_id": "0x675",
+            "request_message": "EAC_DiagReq",
+            "response_message": "EAC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/EAC_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "MHU": {
+            "request_id": "0x684",
+            "response_id": "0x604",
+            "request_message": "MHU_DiagReq",
+            "response_message": "MHU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/MHU_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "IPC": {
+            "request_id": "0x683",
+            "response_id": "0x603",
+            "request_message": "IPC_DiagReq",
+            "response_message": "IPC_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/IPC_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "CCU": {
+            "request_id": "0x689",
+            "response_id": "0x609",
+            "request_message": "CCU_DiagReq",
+            "response_message": "CCU_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/CCU_DIVA.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "CVCLW": {
+            "request_id": "0x6BA",
+            "response_id": "0x63A",
+            "request_message": "CVCLW_DiagReq",
+            "response_message": "CVCLW_DiagResp",
+            "dll_path": "E:/ToolDev/MS_Tool_F/DLL/VF5/VF5_SeednKey_CVCLW.dll",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        },
+        "AVAS": {
+            "request_id": "0x6AA",
+            "response_id": "0x62A",
+            "request_message": "AVAS_DiagReq",
+            "response_message": "AVAS_DiagResp",
+            "dll_path": "",
+            "dids": {
+                "PN": {
+                    "version": "F103",
+                    "revision": "F143",
+                    "request": [
+                        "22F103",
+                        "22F143"
+                    ]
+                },
+                "HW": {
+                    "version": "F191",
+                    "revision": "F141",
+                    "request": [
+                        "22F191",
+                        "22F141"
+                    ]
+                },
+                "SW": {
+                    "version": "F188",
+                    "revision": "F148",
+                    "request": [
+                        "22F188",
+                        "22F148"
+                    ]
+                },
+                "BootLoader": {
+                    "version": "F101",
+                    "request": [
+                        "22F101"
+                    ]
+                }
+            }
+        }
+    }
+}
