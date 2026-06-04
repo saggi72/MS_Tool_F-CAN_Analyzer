@@ -1,0 +1,263 @@
+import cantools
+import json
+import re
+from copy import deepcopy
+from pathlib import Path
+
+OBD_NODE = "OBD"
+
+# =========================
+# Default DID Definition
+# =========================
+
+DEFAULT_DIDS = {
+    "PN": {
+        "version": "F103",
+        "revision": "F143",
+        "request": ["22F103", "22F143"]
+    },
+    "HW": {
+        "version": "F191",
+        "revision": "F141",
+        "request": ["22F191", "22F141"]
+    },
+    "SW": {
+        "version": "F188",
+        "revision": "F148",
+        "request": ["22F188", "22F148"]
+    },
+    "BootLoader": {
+        "version": "F101",
+        "request": ["22F101"]
+    }
+}
+
+OPTIONAL_DIDS = {
+    "CAL": {
+        "version": "F102",
+        "revision": "F142",
+        "request": ["22F102", "22F142"]
+    },
+    "SW_App": {
+        "version": "F104",
+        "revision": "F144",
+        "request": ["22F104", "22F144"]
+    },
+    "SW_Basic": {
+        "version": "F105",
+        "revision": "F145",
+        "request": ["22F105", "22F145"]
+    },
+    "FRONT": {
+        "version": "F109",
+        "revision": "F149",
+        "request": ["22F109", "22F149"]
+    },
+    "HMI": {
+        "version": "F106",
+        "revision": "F146",
+        "request": ["22F106", "22F146"]
+    },
+    "TBox": {
+        "version": "F164",
+        "revision": "F149",
+        "request": ["22F164", "22F149"]
+    }
+}
+
+
+def create_default_dids():
+    return deepcopy(DEFAULT_DIDS)
+
+
+def get_functional_id(db):
+    for msg in db.messages:
+        if "DiagFunctionalAddressing" in msg.name:
+            return f"0x{msg.frame_id:X}"
+
+    return None
+
+
+def extract_diag_ecus(dbc_path):
+    db = cantools.database.load_file(dbc_path)
+
+    ecu_table = {}
+
+    pattern = re.compile(r"^(.*?)_Diag(Req|Resp)$")
+
+    for msg in db.messages:
+
+        match = pattern.match(msg.name)
+
+        if not match:
+            continue
+
+        ecu_name = match.group(1)
+        msg_type = match.group(2)
+
+        ecu_table.setdefault(
+            ecu_name,
+            {
+                "request_id": None,
+                "response_id": None,
+                "request_message": None,
+                "response_message": None,
+                "dids": create_default_dids()
+            }
+        )
+
+        if msg_type == "Req" and OBD_NODE in msg.senders:
+            ecu_table[ecu_name]["request_id"] = f"0x{msg.frame_id:X}"
+            ecu_table[ecu_name]["request_message"] = msg.name
+
+        elif msg_type == "Resp":
+            ecu_table[ecu_name]["response_id"] = f"0x{msg.frame_id:X}"
+            ecu_table[ecu_name]["response_message"] = msg.name
+
+    return ecu_table
+
+
+def add_optional_dids(ecu_data):
+
+    print("\n==============================")
+    print("Optional DID Definition")
+    print("==============================")
+
+    for did in OPTIONAL_DIDS:
+        print(f" - {did}")
+
+    while True:
+
+        ecu_name = input(
+            "\nECU Name (Enter = Finish): "
+        ).strip()
+
+        if ecu_name == "":
+            break
+
+        if ecu_name not in ecu_data:
+            print("ECU not found.")
+            continue
+
+        did_name = input(
+            "Optional DID Name: "
+        ).strip()
+
+        if did_name not in OPTIONAL_DIDS:
+            print("Unknown DID.")
+            continue
+
+        ecu_data[ecu_name]["dids"][did_name] = deepcopy(
+            OPTIONAL_DIDS[did_name]
+        )
+
+        print(
+            f"Added [{did_name}] to [{ecu_name}]"
+        )
+
+
+def save_json(
+        vehicle_model,
+        dbc_path,
+        functional_id,
+        ecu_data
+):
+
+    output = {
+        "vehicle_model": vehicle_model,
+        "dbc_file": Path(dbc_path).name,
+        "functional_id": functional_id,
+        "ecu_count": len(ecu_data),
+        "ecus": ecu_data
+    }
+
+    output_file = f"{vehicle_model}_diagnostic.json"
+
+    with open(
+            output_file,
+            "w",
+            encoding="utf-8"
+    ) as f:
+        json.dump(
+            output,
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
+
+    return output_file
+
+
+def print_summary(ecu_data):
+
+    print("\n======================================")
+    print("Diagnostic ECU Summary")
+    print("======================================")
+
+    for ecu in sorted(ecu_data):
+
+        req_id = ecu_data[ecu]["request_id"]
+        resp_id = ecu_data[ecu]["response_id"]
+
+        print(
+            f"{ecu:<15}"
+            f"REQ={req_id:<8} "
+            f"RESP={resp_id}"
+        )
+
+
+if __name__ == "__main__":
+
+    dbc_path = input(
+        "DBC path: "
+    ).strip()
+
+    dbc_path = dbc_path.strip('"').strip("'")
+
+    if not Path(dbc_path).exists():
+        raise FileNotFoundError(
+            f"\nDBC file not found:\n{dbc_path}"
+        )
+
+    print(f"DBC = {dbc_path}")
+
+    vehicle_model = input(
+        "Vehicle Model: "
+    ).strip()
+
+    db = cantools.database.load_file(
+        dbc_path
+    )
+
+    ecu_data = extract_diag_ecus(
+        dbc_path
+    )
+
+    functional_id = get_functional_id(
+        db
+    )
+
+    print_summary(ecu_data)
+
+    add_optional_dids(
+        ecu_data
+    )
+
+    json_file = save_json(
+        vehicle_model,
+        dbc_path,
+        functional_id,
+        ecu_data
+    )
+
+    print(
+        f"\nJSON saved: {json_file}"
+    )
+
+    print(
+        f"ECU Count: {len(ecu_data)}"
+    )
+
+    print(
+        f"Functional ID: {functional_id}"
+    )
