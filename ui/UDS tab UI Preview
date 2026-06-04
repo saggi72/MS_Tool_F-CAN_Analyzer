@@ -82,12 +82,13 @@ QPushButton:disabled {
 
 QPushButton[class="primary"] {
     background: #3b5bdb;
-    color: white;
+    color: white;      /* Đảm bảo chữ trắng rõ nét */
+    font-weight: 700;  /* Làm đậm hơn để nổi bật */
     border: 1px solid #3251c4;
-    font-weight: 600;
     min-width: 60px;
 }
 QPushButton[class="primary"]:hover { background: #3251c4; }
+
 QPushButton[class="primary"]:pressed { background: #2a45a8; }
 
 QPushButton[class="success"] {
@@ -113,24 +114,22 @@ QPushButton[class="danger"]:hover { background: #b02525; }
 
 /* Toggle button ON/OFF */
 QPushButton[class="toggle-off"] {
-    background: #f1f3f9;
+    background: #ffffff; /* Nền trắng sạch */
     color: #555e7a;
     border: 1px solid #c8cdd8;
     border-radius: 4px;
     font-weight: 700;
     min-width: 50px;
-    min-height: 24px;
-    font-size: 11px;
+    padding: 3px 8px;
 }
 QPushButton[class="toggle-on"] {
     background: #2f9e44;
-    color: white;
+    color: white;       /* Chữ trắng trên nền xanh */
     border: 1px solid #277a39;
     border-radius: 4px;
     font-weight: 700;
     min-width: 50px;
-    min-height: 24px;
-    font-size: 11px;
+    padding: 3px 8px;
 }
 
 /* TP (Tester Present) button - shown right of command row */
@@ -713,14 +712,17 @@ class ConsoleTab(QWidget):
 
         # ── 2. Command row + Tester Present ────────────────────
         cmd_row = QHBoxLayout()
-        cmd_row.setSpacing(5)
+        cmd_row.setSpacing(6)
+        cmd_row.setContentsMargins(0, 0, 0, 0)
 
+        # Command Input
         self._edit_cmd = QLineEdit()
         self._edit_cmd.setObjectName("cmdInput")
         self._edit_cmd.setPlaceholderText("Type the command here")
         self._edit_cmd.returnPressed.connect(self._on_send)
         cmd_row.addWidget(self._edit_cmd)
 
+        # Send Button
         self._btn_send = QPushButton("Send")
         self._btn_send.setProperty("class", "primary")
         self._btn_send.setFixedWidth(60)
@@ -728,40 +730,34 @@ class ConsoleTab(QWidget):
         self._btn_send.clicked.connect(self._on_send)
         cmd_row.addWidget(self._btn_send)
 
+        # Clear Button
         self._btn_clear = QPushButton("Clear")
         self._btn_clear.setFixedWidth(52)
         self._btn_clear.setFixedHeight(28)
         self._btn_clear.clicked.connect(self._on_clear)
         cmd_row.addWidget(self._btn_clear)
 
-        # Spacer before Tester Present
-        cmd_row.addSpacing(10)
+        # Spacer để tạo khoảng cách tách biệt với nhóm S3E
+        cmd_row.addSpacing(15)
 
-        # Tester Present group (box look)
-        tp_frame = QFrame()
-        tp_frame.setStyleSheet(
-            "QFrame{background:#f8f9fc;border:1px solid #dde1ea;"
-            "border-radius:4px;padding:0;}"
-        )
-        tp_lay = QHBoxLayout(tp_frame)
-        tp_lay.setContentsMargins(8, 2, 6, 2)
-        tp_lay.setSpacing(6)
+        # Tester Present Label
+        lbl_tp = QLabel("Tester Present (S3E):")
+        lbl_tp.setStyleSheet("font-size:11px; color:#555e7a; font-weight:600;")
+        cmd_row.addWidget(lbl_tp)
 
-        lbl_tp = QLabel("Tester Present (S3E)")
-        lbl_tp.setStyleSheet(
-            "font-size:11px;color:#555e7a;background:transparent;border:none;"
-        )
-        tp_lay.addWidget(lbl_tp)
-
+        # Toggle ON/OFF Button (Không còn nằm trong frame)
         self._btn_tp = QPushButton("ON")
         self._btn_tp.setCheckable(True)
-        self._btn_tp.setFixedWidth(38)
-        self._btn_tp.setFixedHeight(24)
-        self._btn_tp.setProperty("class", "tp-off")
+        self._btn_tp.setFixedWidth(45)
+        self._btn_tp.setFixedHeight(28)
+        # Sử dụng class 'toggle-off' hoặc 'toggle-on' đã định nghĩa ở phần CSS trước đó
+        self._btn_tp.setProperty("class", "toggle-off")
         self._btn_tp.toggled.connect(self._on_tp_btn_toggled)
-        tp_lay.addWidget(self._btn_tp)
+        cmd_row.addWidget(self._btn_tp)
 
-        cmd_row.addWidget(tp_frame)
+        # Stretch để các thành phần luôn nằm gọn phía bên trái
+        cmd_row.addStretch()
+
         root.addLayout(cmd_row)
 
         # ── 3. Hint ────────────────────────────────────────────
@@ -1064,13 +1060,13 @@ class UdsDiagTab(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    
+
     window = QMainWindow()
     window.setWindowTitle("UDS Diagnostic Tab - UI Preview")
     window.setGeometry(100, 100, 1200, 700)
-    
+
     uds_tab = UdsDiagTab()
     window.setCentralWidget(uds_tab)
-    
+
     window.show()
     sys.exit(app.exec())
