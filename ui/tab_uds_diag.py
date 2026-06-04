@@ -13,7 +13,6 @@ Layout theo UI ảnh:
   │  Config row:                                            │
   │    Vehicle [___]  Request ID [7DF]  DLL File [___]      │
   │    ECU     [___]  Response ID[7E8]  Change DLL File     │
-  │    S3E [0xFF] [ON/OFF]  S3E ID [0xFF]  3E 00  [Save]   │
   │                                                         │
   │  Command bar:                                           │
   │    [Type the command here.....] [Send] [Clear]          │
@@ -477,12 +476,12 @@ class ChannelBar(QFrame):
 
         # P2
         lay.addWidget(_lbl("P2 (ms)"))
-        self._edit_p2 = self._make_edit("P2")
+        self._edit_p2 = self._make_edit("P2", "2200")
         lay.addWidget(self._edit_p2)
 
         # P2*
         lay.addWidget(_lbl("P2* (ms)"))
-        self._edit_p2s = self._make_edit("P2*")
+        self._edit_p2s = self._make_edit("P2*", "2200")
         lay.addWidget(self._edit_p2s)
 
         self._btn_x3 = self._make_x_btn()
@@ -490,7 +489,7 @@ class ChannelBar(QFrame):
 
         # STmin
         lay.addWidget(_lbl("STmin (ms)"))
-        self._edit_stmin = self._make_edit("STmin")
+        self._edit_stmin = self._make_edit("STmin", "0.2")
         lay.addWidget(self._edit_stmin)
 
         lay.addSpacing(4)
@@ -514,11 +513,12 @@ class ChannelBar(QFrame):
         )
         return lbl
 
-    def _make_edit(self, name: str) -> QLineEdit:
+    def _make_edit(self, name: str, default_value: str = "") -> QLineEdit:
         e = QLineEdit()
         e.setObjectName("channelBarEdit")
         e.setFixedWidth(68)
         e.setFixedHeight(24)
+        e.setText(default_value)
         e.setPlaceholderText("")
         return e
 
@@ -566,20 +566,17 @@ class ChannelBar(QFrame):
 
 class UdsConfigPanel(QFrame):
     """
-    Config panel — 3 rows:
+    Config panel — 2 rows:
       Row 0: Vehicle [___]  Request ID [7DF]  DLL File [path]          [Save]
       Row 1: ECU     [___]  Response ID[7E8]  [Change DLL File]        [Save] (span)
-      Row 2: S3E [0xFF] [ON/OFF]  S3E ID [0xFF]  3E 00
     """
 
     dll_changed  = pyqtSignal(str)
     config_saved = pyqtSignal()
-    tp_toggled   = pyqtSignal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("configFrame")
-        self._tp_enabled = False
         self._build()
 
     def _build(self) -> None:
@@ -637,33 +634,6 @@ class UdsConfigPanel(QFrame):
         self._btn_change_dll.setFixedWidth(130)
         root.addWidget(self._btn_change_dll, 1, 4, 1, 2)
 
-        # ── Row 2: S3E ─────────────────────────────────────────
-        root.addWidget(self._lbl("S3E", S), 2, 0)
-
-        self._edit_s3e = QLineEdit("0xFF")
-        self._edit_s3e.setFixedWidth(70)
-        root.addWidget(self._edit_s3e, 2, 1)
-
-        self._btn_tp = QPushButton("ON/OFF")
-        self._btn_tp.setCheckable(True)
-        self._btn_tp.setFixedWidth(62)
-        self._btn_tp.setProperty("class", "toggle-off")
-        self._btn_tp.toggled.connect(self._on_tp_toggled)
-        root.addWidget(self._btn_tp, 2, 2)
-
-        root.addWidget(self._lbl("S3E ID", S), 2, 3)
-
-        self._edit_s3e_id = QLineEdit("0xFF")
-        self._edit_s3e_id.setFixedWidth(70)
-        root.addWidget(self._edit_s3e_id, 2, 4)
-
-        lbl_raw = QLabel("3E 00")
-        lbl_raw.setStyleSheet(
-            "color:#9fa8c4; font-family:Consolas,monospace; font-size:11px;"
-            "background:transparent; border:none;"
-        )
-        root.addWidget(lbl_raw, 2, 5)
-
         root.setColumnStretch(7, 1)
 
     @staticmethod
@@ -671,14 +641,6 @@ class UdsConfigPanel(QFrame):
         l = QLabel(text)
         l.setStyleSheet(style)
         return l
-
-    def _on_tp_toggled(self, checked: bool) -> None:
-        self._tp_enabled = checked
-        cls = "toggle-on" if checked else "toggle-off"
-        self._btn_tp.setProperty("class", cls)
-        self._btn_tp.style().unpolish(self._btn_tp)
-        self._btn_tp.style().polish(self._btn_tp)
-        self.tp_toggled.emit(checked)
 
     def _on_change_dll(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
@@ -696,18 +658,6 @@ class UdsConfigPanel(QFrame):
         except ValueError:
             return None
 
-    def get_s3e_id(self) -> Optional[int]:
-        try:
-            return int(self._edit_s3e_id.text().strip(), 16)
-        except ValueError:
-            return None
-
-    def get_s3e_tx_id(self) -> Optional[int]:
-        try:
-            return int(self._edit_s3e.text().strip(), 16)
-        except ValueError:
-            return None
-
     @property
     def vehicle(self) -> str:
         return self._edit_vehicle.text().strip()
@@ -719,10 +669,6 @@ class UdsConfigPanel(QFrame):
     @property
     def dll_path(self) -> str:
         return self._edit_dll.text().strip()
-
-    @property
-    def tp_enabled(self) -> bool:
-        return self._tp_enabled
 
 
 # ==============================================================
@@ -830,7 +776,7 @@ class LogDataPanel(QWidget):
 class ConsoleTab(QWidget):
     """
     Console tab — layout khớp ảnh:
-      1. Config panel (3 rows)
+      1. Config panel (2 rows)
       2. Command row: [cmdInput] [Send] [Clear]    [Tester Present (S3E)] [ON]
       3. Hint label: "Press Enter or Push Send for Send Command"
       4. Log + Data (splitter, stretch=1)
@@ -851,7 +797,6 @@ class ConsoleTab(QWidget):
 
         # ── 1. Config panel ────────────────────────────────────
         self._config = UdsConfigPanel()
-        self._config.tp_toggled.connect(self._on_config_tp)
         root.addWidget(self._config)
 
         # ── 2. Command row + Tester Present ────────────────────
@@ -939,20 +884,6 @@ class ConsoleTab(QWidget):
         self._edit_cmd.clear()
         self.send_request.emit(raw, f"Console 0x{raw[0]:02X}")
 
-    def _on_config_tp(self, enabled: bool) -> None:
-        """Sync TP button in command bar with config panel toggle."""
-        self._tp_enabled = enabled
-        self._btn_tp.blockSignals(True)
-        self._btn_tp.setChecked(enabled)
-        self._btn_tp.blockSignals(False)
-        cls = "tp-on" if enabled else "tp-off"
-        self._btn_tp.setText("ON" if enabled else "ON")
-        self._btn_tp.setProperty("class", cls)
-        self._btn_tp.style().unpolish(self._btn_tp)
-        self._btn_tp.style().polish(self._btn_tp)
-        s3e_tx = self._config.get_s3e_tx_id() or 0
-        self.tp_toggled.emit(enabled, s3e_tx)
-
     def _on_tp_btn_toggled(self, checked: bool) -> None:
         """Command-bar TP button toggled by user."""
         self._tp_enabled = checked
@@ -960,13 +891,7 @@ class ConsoleTab(QWidget):
         self._btn_tp.setProperty("class", cls)
         self._btn_tp.style().unpolish(self._btn_tp)
         self._btn_tp.style().polish(self._btn_tp)
-        # Sync config panel
-        self._config._btn_tp.blockSignals(True)
-        self._config._btn_tp.setChecked(checked)
-        self._config._btn_tp.blockSignals(False)
-        self._config._on_tp_toggled(checked)
-        s3e_tx = self._config.get_s3e_tx_id() or 0
-        self.tp_toggled.emit(checked, s3e_tx)
+        self.tp_toggled.emit(checked, 0x3E)
 
     # ── public API ────────────────────────────────────────────
 
@@ -1208,7 +1133,7 @@ class UdsDiagTab(QWidget):
       ├─ QTabWidget (sub-tabs) ───────────────────────────────┤
       │  [Console] [DID] [DTC] [...]                          │
       │  Console:                                             │
-      │    UdsConfigPanel (Vehicle/ECU/S3E + IDs + DLL)       │
+      │    UdsConfigPanel (Vehicle/ECU + IDs + DLL)           │
       │    [cmdInput][Send][Clear]  [Tester Present][ON]      │
       │    "Press Enter or..."                                │
       │    LogDataPanel (Log | Data)                          │
