@@ -187,22 +187,7 @@ MS_Tool opens its main window only with a valid license for the current machine.
 
 ---
 
-## 🐍 Program scripting (CAPL-style in Python)
 
-*Test › Program* runs your logic on the Measure Bus. Event handlers are plain Python functions with decorators; the same program can be built from blocks and exported to CAPL.
-
-```python
-"""Quick test: ESC sends C2_ESC_Info and logs brake-pedal changes from IVC."""
-
-@on_start
-def start():
-    set_signal("C2_ESC_Info", "C2_STAT_DSC", "ESC normal")
-    send_cyclic("C2_ESC_Info")              # cycle time taken from the DBC
-
-
-@on_signal("C2_IVC_CVC_StsEpt", "C2_IVC_CVC_BrkPedalPct")
-def brake(value):
-    write("Brake: %.1f %%", value)
 ```
 
 | Events | Common runtime functions |
