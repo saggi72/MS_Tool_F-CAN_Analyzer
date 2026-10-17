@@ -1,0 +1,167 @@
+
+from PyQt6 import QtWidgets, QtCore
+import can
+import sys
+import time
+
+class CanConfigTool(QtWidgets.QMainWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("CAN Bus Configuration Tool (PyQt6 + python-can 4.6.1)")
+        self.resize(800, 600)
+
+        self.open_buses = {}
+        self.init_ui()
+
+    def init_ui(self):
+        central = QtWidgets.QWidget(self)
+        self.setCentralWidget(central)
+        main_layout = QtWidgets.QVBoxLayout(central)
+
+        # Group Box
+        self.group_box = QtWidgets.QGroupBox("CAN Device Configuration", self)
+        gb_layout = QtWidgets.QGridLayout(self.group_box)
+
+        # Checkbox Select All
+        self.chk_select_all = QtWidgets.QCheckBox("Select All Hardware (PEAK & VECTOR)", self.group_box)
+        self.chk_select_all.stateChanged.connect(self.on_select_all_changed)
+        gb_layout.addWidget(self.chk_select_all, 0, 0, 1, 2)
+
+        # ComboBox Hardware Type
+        self.lbl_hw = QtWidgets.QLabel("Select Hardware Type:", self.group_box)
+        self.cmb_hw = QtWidgets.QComboBox(self.group_box)
+        self.cmb_hw.addItems(["VECTOR", "PEAK"])
+        gb_layout.addWidget(self.lbl_hw, 1, 0)
+        gb_layout.addWidget(self.cmb_hw, 1, 1)
+
+        # Scan Button
+        self.btn_scan = QtWidgets.QPushButton("Scan Hardware", self.group_box)
+        self.btn_scan.clicked.connect(self.scan_hardware)
+        gb_layout.addWidget(self.btn_scan, 2, 0, 1, 2)
+
+        # Channels List
+        self.lbl_channels = QtWidgets.QLabel("Available Channels:", self.group_box)
+        self.lst_channels = QtWidgets.QListWidget(self.group_box)
+        self.lst_channels.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
+        gb_layout.addWidget(self.lbl_channels, 3, 0)
+        gb_layout.addWidget(self.lst_channels, 4, 0, 1, 2)
+
+        # Connect Button
+        self.btn_connect = QtWidgets.QPushButton("Connect", self.group_box)
+        self.btn_connect.clicked.connect(self.connect_hardware)
+        gb_layout.addWidget(self.btn_connect, 5, 0, 1, 2)
+
+        main_layout.addWidget(self.group_box)
+
+        # Log/Status
+        self.log = QtWidgets.QPlainTextEdit(self)
+        self.log.setReadOnly(True)
+        self.log.setPlaceholderText("Log/Status")
+        main_layout.addWidget(self.log)
+
+        # Footer
+        footer_layout = QtWidgets.QHBoxLayout()
+        self.btn_disconnect_all = QtWidgets.QPushButton("Disconnect All", self)
+        self.btn_disconnect_all.clicked.connect(self.disconnect_all)
+        footer_layout.addWidget(self.btn_disconnect_all)
+
+        self.btn_quit = QtWidgets.QPushButton("Quit", self)
+        self.btn_quit.clicked.connect(self.close)
+        footer_layout.addWidget(self.btn_quit)
+
+        main_layout.addLayout(footer_layout)
+
+    def on_select_all_changed(self, state):
+        checked = state == QtCore.Qt.CheckState.Checked
+        self.cmb_hw.setEnabled(not checked)
+        self.log_message(f"'Select All' set to {checked}")
+
+    def log_message(self, msg):
+        ts = time.strftime("%H:%M:%S")
+        self.log.appendPlainText(f"[{ts}] {msg}")
+
+    def scan_hardware(self):
+        self.log_message("Scanning hardware...")
+        self.lst_channels.clear()
+
+        scan_vector = True
+        scan_peak = True
+        if not self.chk_select_all.isChecked():
+            selected = self.cmb_hw.currentText().strip().upper()
+            scan_vector = (selected == "VECTOR")
+            scan_peak = (selected == "PEAK")
+
+        candidate_indices = [0, 1]
+
+        if scan_vector:
+            for ch in candidate_indices:
+                try:
+                    test_bus = can.interface.Bus(interface='vector', channel=ch, bitrate=500000, app_name='pythonApp')
+                    self.log_message(f"VECTOR channel {ch} available.")
+                    self.lst_channels.addItem(f"VECTOR Channel {ch}")
+                    test_bus.shutdown()
+                except Exception as e:
+                    self.log_message(f"VECTOR channel {ch} not available: {e}")
+
+        if scan_peak:
+            for ch in candidate_indices:
+                try:
+                    test_bus = can.interface.Bus(interface='peak', channel=ch, bitrate=500000)
+                    self.log_message(f"PEAK channel {ch} available.")
+                    self.lst_channels.addItem(f"PEAK Channel {ch}")
+                    test_bus.shutdown()
+                except Exception as e:
+                    self.log_message(f"PEAK channel {ch} not available: {e}")
+
+    def connect_hardware(self):
+        selected_items = self.lst_channels.selectedItems()
+        if not selected_items:
+            self.log_message("No channels selected.")
+            return
+
+        for item in selected_items:
+            text = item.text()
+            backend, _, channel_str = text.partition(" Channel ")
+            backend = backend.strip().upper()
+            ch = int(channel_str.strip())
+            key = f"{backend}:{ch}"
+
+            if key in self.open_buses:
+                self.log_message(f"Already connected: {text}")
+                continue
+
+            try:
+                if backend == "VECTOR":
+                    bus = can.interface.Bus(interface='vector', channel=ch, bitrate=500000, app_name='pythonApp')
+                elif backend == "PEAK":
+                    bus = can.interface.Bus(interface='peak', channel=ch, bitrate=500000)
+                else:
+                    self.log_message(f"Unsupported backend: {backend}")
+                    continue
+
+                self.open_buses[key] = bus
+                self.log_message(f"Connected: {text} at 500000 bps")
+            except Exception as e:
+                self.log_message(f"Failed to connect {text}: {e}")
+
+    def disconnect_all(self):
+        for key, bus in list(self.open_buses.items()):
+            try:
+                bus.shutdown()
+                self.log_message(f"Disconnected: {key}")
+            except Exception as e:
+                self.log_message(f"Failed to disconnect {key}: {e}")
+            finally:
+                self.open_buses.pop(key, None)
+
+    def closeEvent(self, event):
+        self.disconnect_all()
+        super().closeEvent(event)
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    win = CanConfigTool()
+    win.show()
+    sys.exit(app.exec())
+
