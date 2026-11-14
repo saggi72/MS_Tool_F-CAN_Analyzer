@@ -1,0 +1,134 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	BA_DEF_DEF_
+	VAL_TABLE_
+	SIG_VALTYPE_
+
+BS_:
+
+BU_: CVC BMS EDS
+
+
+BO_ 257 CVC_PT_Cmd: 8 CVC
+ SG_ CVC_HVReq : 0|2@1+ (1,0) [0|3] "" BMS
+ SG_ CVC_EDSModeReq : 2|3@1+ (1,0) [0|7] "" EDS
+ SG_ CVC_TorqueReq : 8|16@1- (0.1,0) [-3000|3000] "Nm" EDS
+ SG_ CVC_PT_Alive : 48|4@1+ (1,0) [0|14] "" BMS,EDS
+ SG_ CVC_PT_CRC : 56|8@1+ (1,0) [0|255] "" BMS,EDS
+
+BO_ 258 CVC_VehState: 8 CVC
+ SG_ CVC_VehicleState : 0|3@1+ (1,0) [0|7] "" BMS,EDS
+ SG_ CVC_FaultCode : 8|8@1+ (1,0) [0|255] "" BMS,EDS
+ SG_ CVC_HVOnTime : 16|16@1+ (1,0) [0|65535] "ms" BMS,EDS
+
+BO_ 513 BMS_Status: 8 BMS
+ SG_ BMS_HVState : 0|3@1+ (1,0) [0|7] "" CVC,EDS
+ SG_ BMS_ContNeg : 3|1@1+ (1,0) [0|1] "" CVC,EDS
+ SG_ BMS_ContPre : 4|1@1+ (1,0) [0|1] "" CVC,EDS
+ SG_ BMS_ContPos : 5|1@1+ (1,0) [0|1] "" CVC,EDS
+ SG_ BMS_InsulationOK : 6|1@1+ (1,0) [0|1] "" CVC
+ SG_ BMS_ReadyForHV : 7|1@1+ (1,0) [0|1] "" CVC
+ SG_ BMS_PackVoltage : 8|16@1+ (0.1,0) [0|1000] "V" CVC,EDS
+ SG_ BMS_PackCurrent : 24|16@1- (0.1,0) [-1000|1000] "A" CVC
+ SG_ BMS_SOC : 40|8@1+ (0.5,0) [0|100] "%" CVC
+ SG_ BMS_Alive : 48|4@1+ (1,0) [0|14] "" CVC
+ SG_ BMS_CRC : 56|8@1+ (1,0) [0|255] "" CVC
+
+BO_ 514 BMS_Limits: 8 BMS
+ SG_ BMS_MaxDischPower : 0|16@1+ (0.1,0) [0|500] "kW" CVC
+ SG_ BMS_MaxChgPower : 16|16@1+ (0.1,0) [0|500] "kW" CVC
+ SG_ BMS_CellTempMax : 32|8@1+ (1,-40) [-40|215] "degC" CVC
+ SG_ BMS_CellVoltMin : 40|16@1+ (0.001,0) [0|5] "V" CVC
+
+BO_ 769 EDS_Status: 8 EDS
+ SG_ EDS_State : 0|3@1+ (1,0) [0|7] "" CVC
+ SG_ EDS_Alive : 4|4@1+ (1,0) [0|14] "" CVC
+ SG_ EDS_DCLinkVoltage : 8|16@1+ (0.1,0) [0|1000] "V" CVC,BMS
+ SG_ EDS_MotorSpeed : 24|16@1- (1,0) [-20000|20000] "rpm" CVC
+ SG_ EDS_TorqueAct : 40|16@1- (0.1,0) [-3000|3000] "Nm" CVC
+ SG_ EDS_CRC : 56|8@1+ (1,0) [0|255] "" CVC
+
+BO_ 770 EDS_Temp: 8 EDS
+ SG_ EDS_InverterTemp : 0|8@1+ (1,-40) [-40|215] "degC" CVC
+ SG_ EDS_MotorTemp : 8|8@1+ (1,-40) [-40|215] "degC" CVC
+
+
+CM_ "PT: powertrain CAN of the HV_ON demo (CVC, BMS, EDS), 500 kbit/s";
+CM_ BO_ 257 "CVC commands to the powertrain: HV request, EDS mode, torque";
+CM_ SG_ 257 CVC_HVReq "HV request to the BMS";
+CM_ SG_ 257 CVC_EDSModeReq "Operating mode asked of the EDS";
+CM_ SG_ 257 CVC_TorqueReq "Torque request";
+CM_ SG_ 257 CVC_PT_Alive "Alive counter 0..14";
+CM_ SG_ 257 CVC_PT_CRC "CRC-8/SAE-J1850 over bytes 0-6";
+CM_ BO_ 258 "Vehicle state of the CVC";
+CM_ SG_ 258 CVC_VehicleState "Vehicle power state";
+CM_ SG_ 258 CVC_FaultCode "Why the CVC went to Fault";
+CM_ SG_ 258 CVC_HVOnTime "Time from the HV_On request to Ready (last power-up)";
+CM_ BO_ 513 "BMS state, contactors and pack values";
+CM_ SG_ 513 BMS_HVState "HV state of the battery";
+CM_ SG_ 513 BMS_ContNeg "Negative main contactor";
+CM_ SG_ 513 BMS_ContPre "Precharge contactor";
+CM_ SG_ 513 BMS_ContPos "Positive main contactor";
+CM_ SG_ 513 BMS_InsulationOK "Insulation monitor";
+CM_ SG_ 513 BMS_ReadyForHV "The BMS can close the contactors";
+CM_ SG_ 513 BMS_PackVoltage "Pack voltage";
+CM_ SG_ 513 BMS_PackCurrent "Pack current, > 0 = discharge";
+CM_ SG_ 513 BMS_SOC "State of charge";
+CM_ SG_ 513 BMS_Alive "Alive counter 0..14";
+CM_ SG_ 513 BMS_CRC "CRC-8/SAE-J1850 over bytes 0-6";
+CM_ BO_ 514 "Power limits and cell values";
+CM_ SG_ 514 BMS_MaxDischPower "Discharge power limit";
+CM_ SG_ 514 BMS_MaxChgPower "Charge power limit";
+CM_ SG_ 514 BMS_CellTempMax "Highest cell temperature";
+CM_ SG_ 514 BMS_CellVoltMin "Lowest cell voltage";
+CM_ BO_ 769 "Electric drive (inverter + motor) state";
+CM_ SG_ 769 EDS_State "EDS state";
+CM_ SG_ 769 EDS_Alive "Alive counter 0..14";
+CM_ SG_ 769 EDS_DCLinkVoltage "DC link voltage";
+CM_ SG_ 769 EDS_MotorSpeed "Motor speed";
+CM_ SG_ 769 EDS_TorqueAct "Actual torque";
+CM_ SG_ 769 EDS_CRC "CRC-8/SAE-J1850 over bytes 0-6";
+CM_ BO_ 770 "EDS temperatures";
+CM_ SG_ 770 EDS_InverterTemp "Inverter temperature";
+CM_ SG_ 770 EDS_MotorTemp "Motor temperature";
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 65535;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","Event","IfActive","NoMsgSendType";
+BA_DEF_ SG_ "GenSigStartValue" INT 0 2147483647;
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "GenSigStartValue" 0;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_ "BusType" "CAN";
+BA_ "GenMsgCycleTime" BO_ 257 20;
+BA_ "GenMsgCycleTime" BO_ 258 100;
+BA_ "GenMsgCycleTime" BO_ 513 20;
+BA_ "GenSigStartValue" SG_ 513 BMS_InsulationOK 1;
+BA_ "GenSigStartValue" SG_ 513 BMS_SOC 160;
+BA_ "GenMsgCycleTime" BO_ 514 100;
+BA_ "GenSigStartValue" SG_ 514 BMS_MaxDischPower 1500;
+BA_ "GenSigStartValue" SG_ 514 BMS_MaxChgPower 800;
+BA_ "GenSigStartValue" SG_ 514 BMS_CellTempMax 65;
+BA_ "GenSigStartValue" SG_ 514 BMS_CellVoltMin 3700;
+BA_ "GenMsgCycleTime" BO_ 769 20;
+BA_ "GenMsgCycleTime" BO_ 770 100;
+BA_ "GenSigStartValue" SG_ 770 EDS_InverterTemp 65;
+BA_ "GenSigStartValue" SG_ 770 EDS_MotorTemp 70;
+VAL_ 257 CVC_HVReq 3 "EmergencyOff" 2 "HV_Off" 1 "HV_On" 0 "NoRequest" ;
+VAL_ 257 CVC_EDSModeReq 2 "ActiveDischarge" 1 "Enable" 0 "Standby" ;
+VAL_ 258 CVC_VehicleState 5 "HV_Off" 4 "Fault" 3 "Ready" 2 "HV_Precharge" 1 "Standby" 0 "Off" ;
+VAL_ 258 CVC_FaultCode 6 "BMS_Fault" 5 "Crash" 4 "Insulation" 3 "EDS_NotReady" 2 "Precharge_Timeout" 1 "BMS_Timeout" 0 "NoFault" ;
+VAL_ 513 BMS_HVState 4 "Fault" 3 "Opening" 2 "HV_On" 1 "Precharge" 0 "Off" ;
+VAL_ 513 BMS_ContNeg 1 "Closed" 0 "Open" ;
+VAL_ 513 BMS_ContPre 1 "Closed" 0 "Open" ;
+VAL_ 513 BMS_ContPos 1 "Closed" 0 "Open" ;
+VAL_ 513 BMS_InsulationOK 1 "OK" 0 "Fail" ;
+VAL_ 513 BMS_ReadyForHV 1 "Ready" 0 "NotReady" ;
+VAL_ 769 EDS_State 5 "Discharge" 4 "Fault" 3 "Run" 2 "Ready" 1 "Standby" 0 "Init" ;

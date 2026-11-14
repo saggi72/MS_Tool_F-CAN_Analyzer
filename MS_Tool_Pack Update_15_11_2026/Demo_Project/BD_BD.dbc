@@ -1,0 +1,64 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	BA_DEF_DEF_
+	VAL_TABLE_
+	SIG_VALTYPE_
+
+BS_:
+
+BU_: CVC BCM
+
+
+BO_ 1025 BCM_Status: 8 BCM
+ SG_ BCM_IgnitionSts : 0|2@1+ (1,0) [0|3] "" CVC
+ SG_ BCM_BrakePedal : 2|1@1+ (1,0) [0|1] "" CVC
+ SG_ BCM_DriverDoor : 3|1@1+ (1,0) [0|1] "" CVC
+ SG_ BCM_CrashSts : 4|1@1+ (1,0) [0|1] "" CVC
+ SG_ BCM_Alive : 8|4@1+ (1,0) [0|14] "" CVC
+
+BO_ 1281 CVC_BD_Status: 8 CVC
+ SG_ CVC_ReadyLamp : 0|1@1+ (1,0) [0|1] "" BCM
+ SG_ CVC_HVWarnLamp : 1|1@1+ (1,0) [0|1] "" BCM
+ SG_ CVC_VehicleSts : 2|3@1+ (1,0) [0|7] "" BCM
+ SG_ CVC_SOCDisp : 8|8@1+ (0.5,0) [0|100] "%" BCM
+ SG_ CVC_BD_Alive : 16|4@1+ (1,0) [0|14] "" BCM
+
+
+CM_ "BD: body CAN of the HV_ON demo (CVC, BCM), 500 kbit/s";
+CM_ BO_ 1025 "Body state: ignition, brake pedal, door, crash";
+CM_ SG_ 1025 BCM_IgnitionSts "Ignition (KL15) state";
+CM_ SG_ 1025 BCM_BrakePedal "Brake pedal switch";
+CM_ SG_ 1025 BCM_DriverDoor "Driver door";
+CM_ SG_ 1025 BCM_CrashSts "Crash signal";
+CM_ SG_ 1025 BCM_Alive "Alive counter 0..14";
+CM_ BO_ 1281 "CVC to the body / cluster: lamps and state";
+CM_ SG_ 1281 CVC_ReadyLamp "READY lamp";
+CM_ SG_ 1281 CVC_HVWarnLamp "HV system warning lamp";
+CM_ SG_ 1281 CVC_VehicleSts "Vehicle power state (for the cluster)";
+CM_ SG_ 1281 CVC_SOCDisp "SOC shown on the cluster";
+CM_ SG_ 1281 CVC_BD_Alive "Alive counter 0..14";
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 65535;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","Event","IfActive","NoMsgSendType";
+BA_DEF_ SG_ "GenSigStartValue" INT 0 2147483647;
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "GenSigStartValue" 0;
+BA_DEF_DEF_ "BusType" "CAN";
+BA_ "BusType" "CAN";
+BA_ "GenMsgCycleTime" BO_ 1025 100;
+BA_ "GenMsgCycleTime" BO_ 1281 100;
+VAL_ 1025 BCM_IgnitionSts 3 "Start" 2 "On" 1 "Acc" 0 "Off" ;
+VAL_ 1025 BCM_BrakePedal 1 "Pressed" 0 "Released" ;
+VAL_ 1025 BCM_DriverDoor 1 "Open" 0 "Closed" ;
+VAL_ 1025 BCM_CrashSts 1 "Crash" 0 "NoCrash" ;
+VAL_ 1281 CVC_ReadyLamp 1 "On" 0 "Off" ;
+VAL_ 1281 CVC_HVWarnLamp 1 "On" 0 "Off" ;
+VAL_ 1281 CVC_VehicleSts 5 "HV_Off" 4 "Fault" 3 "Ready" 2 "HV_Precharge" 1 "Standby" 0 "Off" ;
