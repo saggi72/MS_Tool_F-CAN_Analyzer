@@ -1,0 +1,2902 @@
+{
+  "target": "python",
+  "tab": "panel",
+  "unit": 0,
+  "canvas": {
+    "version": 1,
+    "stacks": [
+      {
+        "x": 40.0,
+        "y": 40.0,
+        "blocks": [
+          {
+            "type": "on_start",
+            "fields": {},
+            "uid": "b05d7deff70c"
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Gear",
+              "value": 0
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::GearReq",
+              "value": 0
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::GearText",
+              "value": "P"
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Msg",
+              "value": "Press the brake, then POWER"
+            }
+          },
+          {
+            "type": "set_timer",
+            "fields": {
+              "name": "phys",
+              "ms": 50
+            }
+          }
+        ]
+      },
+      {
+        "x": 40.0,
+        "y": 330.0,
+        "blocks": [
+          {
+            "type": "py_handler",
+            "fields": {
+              "head": "def say(text, denied=False):"
+            },
+            "uid": "9b89bf3bd962"
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Msg",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "get_var",
+                "fields": {
+                  "var": "text"
+                }
+              }
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "py_cond",
+                "fields": {
+                  "code": "denied"
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "sysvar_set",
+                  "fields": {
+                    "name": "Drive::Denied",
+                    "value": 1
+                  }
+                },
+                {
+                  "type": "set_timer",
+                  "fields": {
+                    "name": "denied",
+                    "ms": 1500
+                  }
+                },
+                {
+                  "type": "write",
+                  "fields": {
+                    "text": "hello"
+                  },
+                  "inputs": {
+                    "text": {
+                      "type": "arith",
+                      "fields": {
+                        "a": 0,
+                        "op": "+",
+                        "b": 0
+                      },
+                      "inputs": {
+                        "a": {
+                          "type": "py_expr",
+                          "fields": {
+                            "code": "\"Shift refused: \""
+                          }
+                        },
+                        "b": {
+                          "type": "get_var",
+                          "fields": {
+                            "var": "text"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "x": 40.0,
+        "y": 586.0,
+        "blocks": [
+          {
+            "type": "on_timer",
+            "fields": {
+              "name": "denied"
+            },
+            "uid": "c0826be8126d",
+            "fn": "denied_off"
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Denied",
+              "value": 0
+            }
+          }
+        ]
+      },
+      {
+        "x": 40.0,
+        "y": 740.0,
+        "blocks": [
+          {
+            "type": "on_sysvar",
+            "fields": {
+              "name": "Drive::Ready",
+              "when": "changes"
+            },
+            "uid": "11fbaccf60f7",
+            "fn": "power"
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "braking",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": ">=",
+                  "b": 10
+                },
+                "inputs": {
+                  "a": {
+                    "type": "sysvar_get",
+                    "fields": {
+                      "name": "Drive::Brake"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "logic",
+                "fields": {
+                  "op": "and"
+                },
+                "inputs": {
+                  "a": {
+                    "type": "py_cond",
+                    "fields": {
+                      "code": "value"
+                    }
+                  },
+                  "b": {
+                    "type": "not",
+                    "fields": {},
+                    "inputs": {
+                      "a": {
+                        "type": "py_cond",
+                        "fields": {
+                          "code": "braking"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "sysvar_set",
+                  "fields": {
+                    "name": "Drive::Ready",
+                    "value": 0
+                  },
+                  "note": "refused: back to off"
+                },
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "say(\"Press the brake to start\", True)"
+                  }
+                },
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "return"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": "==",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "bool(value)"
+                    }
+                  },
+                  "b": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "powered"
+                    }
+                  }
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "return                                         # (the refusal above wrote 0 again)"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "powered",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "bool(value)"
+                }
+              }
+            }
+          },
+          {
+            "type": "if_else",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "py_cond",
+                "fields": {
+                  "code": "value"
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "say(\"READY — brake, then D or R\")"
+                  }
+                },
+                {
+                  "type": "write",
+                  "fields": {
+                    "text": "READY"
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "fields": {},
+                  "inputs": {
+                    "cond": {
+                      "type": "compare",
+                      "fields": {
+                        "a": 0,
+                        "op": "<",
+                        "b": 3
+                      },
+                      "inputs": {
+                        "a": {
+                          "type": "arith",
+                          "fields": {
+                            "a": 0,
+                            "op": "*",
+                            "b": 3.6
+                          },
+                          "inputs": {
+                            "a": {
+                              "type": "py_expr",
+                              "fields": {
+                                "code": "abs(v)"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "bodies": {
+                    "body": [
+                      {
+                        "type": "python",
+                        "fields": {
+                          "code": "set_gear(0)"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "say(\"Power off\")"
+                  }
+                },
+                {
+                  "type": "write",
+                  "fields": {
+                    "text": "Power off"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "x": 40.0,
+        "y": 1404.0,
+        "blocks": [
+          {
+            "type": "py_handler",
+            "fields": {
+              "head": "def set_gear(g):"
+            },
+            "uid": "23cb69b5b793"
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Gear",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "get_var",
+                "fields": {
+                  "var": "g"
+                }
+              }
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::GearReq",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "get_var",
+                "fields": {
+                  "var": "g"
+                }
+              }
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::GearText",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "GEARS[g]"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "x": 40.0,
+        "y": 1592.0,
+        "blocks": [
+          {
+            "type": "on_sysvar",
+            "fields": {
+              "name": "Drive::GearReq",
+              "when": "changes"
+            },
+            "uid": "055eeec65573",
+            "fn": "shift"
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "req",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "int(value)"
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "cur",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "int(sysvar_get(\"Drive::Gear\"))"
+                }
+              }
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": "==",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "req"
+                    }
+                  },
+                  "b": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "cur"
+                    }
+                  }
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "return"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "speed",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "*",
+                  "b": 3.6
+                },
+                "inputs": {
+                  "a": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "abs(v)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "braking",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": ">=",
+                  "b": 10
+                },
+                "inputs": {
+                  "a": {
+                    "type": "sysvar_get",
+                    "fields": {
+                      "name": "Drive::Brake"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "ready",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": "==",
+                  "b": 1
+                },
+                "inputs": {
+                  "a": {
+                    "type": "sysvar_get",
+                    "fields": {
+                      "name": "Drive::Ready"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "why",
+              "value": ""
+            }
+          },
+          {
+            "type": "if_else",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "logic",
+                "fields": {
+                  "op": "and"
+                },
+                "inputs": {
+                  "a": {
+                    "type": "compare",
+                    "fields": {
+                      "a": 0,
+                      "op": "==",
+                      "b": 0
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "get_var",
+                        "fields": {
+                          "var": "req"
+                        }
+                      }
+                    }
+                  },
+                  "b": {
+                    "type": "compare",
+                    "fields": {
+                      "a": 0,
+                      "op": ">=",
+                      "b": 3
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "get_var",
+                        "fields": {
+                          "var": "speed"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "set_var",
+                  "fields": {
+                    "var": "why",
+                    "value": "P only below 3 km/h"
+                  }
+                }
+              ],
+              "else": [
+                {
+                  "type": "if_else",
+                  "fields": {},
+                  "inputs": {
+                    "cond": {
+                      "type": "logic",
+                      "fields": {
+                        "op": "and"
+                      },
+                      "inputs": {
+                        "a": {
+                          "type": "compare",
+                          "fields": {
+                            "a": 0,
+                            "op": "==",
+                            "b": 0
+                          },
+                          "inputs": {
+                            "a": {
+                              "type": "py_expr",
+                              "fields": {
+                                "code": "{req, cur}"
+                              }
+                            },
+                            "b": {
+                              "type": "py_expr",
+                              "fields": {
+                                "code": "{1, 3}"
+                              }
+                            }
+                          }
+                        },
+                        "b": {
+                          "type": "compare",
+                          "fields": {
+                            "a": 0,
+                            "op": ">=",
+                            "b": 5
+                          },
+                          "inputs": {
+                            "a": {
+                              "type": "get_var",
+                              "fields": {
+                                "var": "speed"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "bodies": {
+                    "body": [
+                      {
+                        "type": "set_var",
+                        "fields": {
+                          "var": "why",
+                          "value": "D <-> R only below 5 km/h"
+                        }
+                      }
+                    ],
+                    "else": [
+                      {
+                        "type": "if_else",
+                        "fields": {},
+                        "inputs": {
+                          "cond": {
+                            "type": "logic",
+                            "fields": {
+                              "op": "and"
+                            },
+                            "inputs": {
+                              "a": {
+                                "type": "compare",
+                                "fields": {
+                                  "a": 0,
+                                  "op": "==",
+                                  "b": 0
+                                },
+                                "inputs": {
+                                  "a": {
+                                    "type": "get_var",
+                                    "fields": {
+                                      "var": "cur"
+                                    }
+                                  }
+                                }
+                              },
+                              "b": {
+                                "type": "not",
+                                "fields": {},
+                                "inputs": {
+                                  "a": {
+                                    "type": "py_cond",
+                                    "fields": {
+                                      "code": "ready"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "bodies": {
+                          "body": [
+                            {
+                              "type": "set_var",
+                              "fields": {
+                                "var": "why",
+                                "value": "Not READY: press the brake and POWER"
+                              }
+                            }
+                          ],
+                          "else": [
+                            {
+                              "type": "if_else",
+                              "fields": {},
+                              "inputs": {
+                                "cond": {
+                                  "type": "logic",
+                                  "fields": {
+                                    "op": "and"
+                                  },
+                                  "inputs": {
+                                    "a": {
+                                      "type": "compare",
+                                      "fields": {
+                                        "a": 0,
+                                        "op": "==",
+                                        "b": 0
+                                      },
+                                      "inputs": {
+                                        "a": {
+                                          "type": "get_var",
+                                          "fields": {
+                                            "var": "cur"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "b": {
+                                      "type": "not",
+                                      "fields": {},
+                                      "inputs": {
+                                        "a": {
+                                          "type": "py_cond",
+                                          "fields": {
+                                            "code": "braking"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "bodies": {
+                                "body": [
+                                  {
+                                    "type": "set_var",
+                                    "fields": {
+                                      "var": "why",
+                                      "value": "Press the brake to leave P"
+                                    }
+                                  }
+                                ],
+                                "else": [
+                                  {
+                                    "type": "if",
+                                    "fields": {},
+                                    "inputs": {
+                                      "cond": {
+                                        "type": "py_cond",
+                                        "fields": {
+                                          "code": "req in (1, 3) and speed < 5 and not braking"
+                                        }
+                                      }
+                                    },
+                                    "bodies": {
+                                      "body": [
+                                        {
+                                          "type": "set_var",
+                                          "fields": {
+                                            "var": "why",
+                                            "value": 0
+                                          },
+                                          "inputs": {
+                                            "value": {
+                                              "type": "arith",
+                                              "fields": {
+                                                "a": 0,
+                                                "op": "+",
+                                                "b": 0
+                                              },
+                                              "inputs": {
+                                                "a": {
+                                                  "type": "py_expr",
+                                                  "fields": {
+                                                    "code": "\"Press the brake to engage \""
+                                                  }
+                                                },
+                                                "b": {
+                                                  "type": "py_expr",
+                                                  "fields": {
+                                                    "code": "GEARS[req]"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "py_cond",
+                "fields": {
+                  "code": "why"
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "sysvar_set",
+                  "fields": {
+                    "name": "Drive::GearReq",
+                    "value": 1
+                  },
+                  "note": "the lever goes back",
+                  "inputs": {
+                    "value": {
+                      "type": "get_var",
+                      "fields": {
+                        "var": "cur"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "say(why, True)"
+                  }
+                },
+                {
+                  "type": "python",
+                  "fields": {
+                    "code": "return"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "python",
+            "fields": {
+              "code": "set_gear(req)"
+            }
+          },
+          {
+            "type": "python",
+            "fields": {
+              "code": "say(\"Gear \" + GEARS[req])"
+            }
+          },
+          {
+            "type": "write",
+            "fields": {
+              "text": "hello"
+            },
+            "inputs": {
+              "text": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "%",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "\"Gear %s -> %s at %.1f km/h\""
+                    }
+                  },
+                  "b": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "(GEARS[cur], GEARS[req], speed)"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "x": 520.0,
+        "y": 40.0,
+        "blocks": [
+          {
+            "type": "on_timer",
+            "fields": {
+              "name": "phys"
+            },
+            "uid": "4a9b27ed6332",
+            "fn": "phys"
+          },
+          {
+            "type": "set_timer",
+            "fields": {
+              "name": "phys",
+              "ms": 50
+            },
+            "note": "first: an error below must not stop it"
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "dt",
+              "value": 0.05
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "ready",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": "==",
+                  "b": 1
+                },
+                "inputs": {
+                  "a": {
+                    "type": "sysvar_get",
+                    "fields": {
+                      "name": "Drive::Ready"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "accel",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "sysvar_get(\"Drive::Accel\") if ready else 0.0"
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "brake",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "sysvar_get",
+                "fields": {
+                  "name": "Drive::Brake"
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "gear",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "int(sysvar_get(\"Drive::Gear\"))"
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "direction",
+              "value": 0
+            },
+            "note": "R backwards, D forwards, P / N no drive",
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "{1: -1, 3: 1}.get(gear, 0)"
+                }
+              }
+            }
+          },
+          {
+            "type": "comment",
+            "fields": {
+              "text": "drive force: less at high speed, R limited to about 30 km/h"
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "top",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "8.5 if gear == 1 else 55.0"
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "a_drive",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "*",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "arith",
+                    "fields": {
+                      "a": 0,
+                      "op": "*",
+                      "b": 4.5
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "arith",
+                        "fields": {
+                          "a": 0,
+                          "op": "/",
+                          "b": 100
+                        },
+                        "inputs": {
+                          "a": {
+                            "type": "arith",
+                            "fields": {
+                              "a": 0,
+                              "op": "*",
+                              "b": 0
+                            },
+                            "inputs": {
+                              "a": {
+                                "type": "get_var",
+                                "fields": {
+                                  "var": "direction"
+                                }
+                              },
+                              "b": {
+                                "type": "get_var",
+                                "fields": {
+                                  "var": "accel"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "b": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "max(0.0, 1 - abs(v) / top)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "note": "creep like an automatic",
+            "inputs": {
+              "cond": {
+                "type": "py_cond",
+                "fields": {
+                  "code": "ready and direction and accel == 0 and brake < 5"
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "set_var",
+                  "fields": {
+                    "var": "a_drive",
+                    "value": 0
+                  },
+                  "inputs": {
+                    "value": {
+                      "type": "arith",
+                      "fields": {
+                        "a": 0,
+                        "op": "*",
+                        "b": 0
+                      },
+                      "inputs": {
+                        "a": {
+                          "type": "arith",
+                          "fields": {
+                            "a": 0,
+                            "op": "*",
+                            "b": 0.6
+                          },
+                          "inputs": {
+                            "a": {
+                              "type": "get_var",
+                              "fields": {
+                                "var": "direction"
+                              }
+                            }
+                          }
+                        },
+                        "b": {
+                          "type": "py_expr",
+                          "fields": {
+                            "code": "max(0.0, 1 - abs(v) / 2.0)"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "v",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "+",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "v"
+                    }
+                  },
+                  "b": {
+                    "type": "arith",
+                    "fields": {
+                      "a": 0,
+                      "op": "*",
+                      "b": 0
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "get_var",
+                        "fields": {
+                          "var": "a_drive"
+                        }
+                      },
+                      "b": {
+                        "type": "get_var",
+                        "fields": {
+                          "var": "dt"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "resist",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "*",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "arith",
+                    "fields": {
+                      "a": 0,
+                      "op": "+",
+                      "b": 0
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "arith",
+                        "fields": {
+                          "a": 0,
+                          "op": "+",
+                          "b": 0.15
+                        },
+                        "inputs": {
+                          "a": {
+                            "type": "arith",
+                            "fields": {
+                              "a": 0,
+                              "op": "*",
+                              "b": 9.0
+                            },
+                            "inputs": {
+                              "a": {
+                                "type": "arith",
+                                "fields": {
+                                  "a": 0,
+                                  "op": "/",
+                                  "b": 100
+                                },
+                                "inputs": {
+                                  "a": {
+                                    "type": "get_var",
+                                    "fields": {
+                                      "var": "brake"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "b": {
+                        "type": "arith",
+                        "fields": {
+                          "a": 0,
+                          "op": "*",
+                          "b": 0
+                        },
+                        "inputs": {
+                          "a": {
+                            "type": "arith",
+                            "fields": {
+                              "a": 0.0004,
+                              "op": "*",
+                              "b": 0
+                            },
+                            "inputs": {
+                              "b": {
+                                "type": "get_var",
+                                "fields": {
+                                  "var": "v"
+                                }
+                              }
+                            }
+                          },
+                          "b": {
+                            "type": "get_var",
+                            "fields": {
+                              "var": "v"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "b": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "dt"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "v",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "0.0 if abs(v) <= resist else v - math.copysign(resist, v)"
+                }
+              }
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "compare",
+                "fields": {
+                  "a": 0,
+                  "op": "==",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "gear"
+                    }
+                  }
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "set_var",
+                  "fields": {
+                    "var": "v",
+                    "value": 0.0
+                  },
+                  "note": "parking pawl"
+                }
+              ]
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "odo",
+              "value": 0
+            },
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "+",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "odo"
+                    }
+                  },
+                  "b": {
+                    "type": "arith",
+                    "fields": {
+                      "a": 0,
+                      "op": "/",
+                      "b": 1000
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "arith",
+                        "fields": {
+                          "a": 0,
+                          "op": "*",
+                          "b": 0
+                        },
+                        "inputs": {
+                          "a": {
+                            "type": "py_expr",
+                            "fields": {
+                              "code": "abs(v)"
+                            }
+                          },
+                          "b": {
+                            "type": "get_var",
+                            "fields": {
+                              "var": "dt"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "set_var",
+            "fields": {
+              "var": "power",
+              "value": 0
+            },
+            "note": "kW",
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "/",
+                  "b": 1000
+                },
+                "inputs": {
+                  "a": {
+                    "type": "arith",
+                    "fields": {
+                      "a": 0,
+                      "op": "*",
+                      "b": 0
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "arith",
+                        "fields": {
+                          "a": 0,
+                          "op": "*",
+                          "b": 0
+                        },
+                        "inputs": {
+                          "a": {
+                            "type": "get_var",
+                            "fields": {
+                              "var": "MASS"
+                            }
+                          },
+                          "b": {
+                            "type": "get_var",
+                            "fields": {
+                              "var": "a_drive"
+                            }
+                          }
+                        }
+                      },
+                      "b": {
+                        "type": "get_var",
+                        "fields": {
+                          "var": "v"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "if",
+            "fields": {},
+            "inputs": {
+              "cond": {
+                "type": "logic",
+                "fields": {
+                  "op": "and"
+                },
+                "inputs": {
+                  "a": {
+                    "type": "compare",
+                    "fields": {
+                      "a": 0,
+                      "op": ">",
+                      "b": 5
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "get_var",
+                        "fields": {
+                          "var": "brake"
+                        }
+                      }
+                    }
+                  },
+                  "b": {
+                    "type": "compare",
+                    "fields": {
+                      "a": 0,
+                      "op": ">",
+                      "b": 0.5
+                    },
+                    "inputs": {
+                      "a": {
+                        "type": "py_expr",
+                        "fields": {
+                          "code": "abs(v)"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "bodies": {
+              "body": [
+                {
+                  "type": "set_var",
+                  "fields": {
+                    "var": "power",
+                    "value": 0
+                  },
+                  "note": "regeneration",
+                  "inputs": {
+                    "value": {
+                      "type": "py_expr",
+                      "fields": {
+                        "code": "-min(60.0, MASS * brake / 100 * 9.0 * abs(v) / 1000 * 0.3)"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Speed",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "*",
+                  "b": 3.6
+                },
+                "inputs": {
+                  "a": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "abs(v)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Rpm",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "min(10000.0, abs(v) * 160)"
+                }
+              }
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Power",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "max(-60.0, min(150.0, power))"
+                }
+              }
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::Odo",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "get_var",
+                "fields": {
+                  "var": "odo"
+                }
+              }
+            }
+          },
+          {
+            "type": "sysvar_set",
+            "fields": {
+              "name": "Drive::BrakeLamp",
+              "value": 1
+            },
+            "inputs": {
+              "value": {
+                "type": "py_expr",
+                "fields": {
+                  "code": "1 if brake > 5 else 0"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "x": 520.0,
+        "y": 1044.0,
+        "blocks": [
+          {
+            "type": "on_stop",
+            "fields": {},
+            "uid": "aea184bce407"
+          },
+          {
+            "type": "write",
+            "fields": {
+              "text": "hello"
+            },
+            "inputs": {
+              "text": {
+                "type": "arith",
+                "fields": {
+                  "a": 0,
+                  "op": "%",
+                  "b": 0
+                },
+                "inputs": {
+                  "a": {
+                    "type": "py_expr",
+                    "fields": {
+                      "code": "\"Drive demo stopped, trip %.3f km\""
+                    }
+                  },
+                  "b": {
+                    "type": "get_var",
+                    "fields": {
+                      "var": "odo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "panels": {
+    "format": 1,
+    "sysvars": [
+      {
+        "name": "Drive::Ready",
+        "type": "int",
+        "init": 0,
+        "min": 0.0,
+        "max": 1.0,
+        "comment": "POWER button: READY (needs the brake pedal)"
+      },
+      {
+        "name": "Drive::Accel",
+        "type": "float",
+        "init": 0.0,
+        "min": 0.0,
+        "max": 100.0,
+        "unit": "%",
+        "comment": "accelerator pedal"
+      },
+      {
+        "name": "Drive::Brake",
+        "type": "float",
+        "init": 0.0,
+        "min": 0.0,
+        "max": 100.0,
+        "unit": "%",
+        "comment": "brake pedal"
+      },
+      {
+        "name": "Drive::BrakeLamp",
+        "type": "int",
+        "init": 0,
+        "min": 0.0,
+        "max": 1.0,
+        "comment": "brake lamp (Brake > 5 %)"
+      },
+      {
+        "name": "Drive::GearReq",
+        "type": "int",
+        "init": 0,
+        "min": 0.0,
+        "max": 3.0,
+        "comment": "gear asked by the driver: 0 P, 1 R, 2 N, 3 D"
+      },
+      {
+        "name": "Drive::Gear",
+        "type": "int",
+        "init": 0,
+        "min": 0.0,
+        "max": 3.0,
+        "comment": "gear engaged (the code checks the shift rules)"
+      },
+      {
+        "name": "Drive::GearText",
+        "type": "string",
+        "init": "P",
+        "comment": "engaged gear as text"
+      },
+      {
+        "name": "Drive::Denied",
+        "type": "int",
+        "init": 0,
+        "min": 0.0,
+        "max": 1.0,
+        "comment": "1 for 1.5 s when a shift is refused"
+      },
+      {
+        "name": "Drive::Msg",
+        "type": "string",
+        "init": "Press the brake, then POWER",
+        "comment": "message to the driver"
+      },
+      {
+        "name": "Drive::Speed",
+        "type": "float",
+        "init": 0.0,
+        "min": 0.0,
+        "max": 200.0,
+        "unit": "km/h",
+        "comment": "vehicle speed"
+      },
+      {
+        "name": "Drive::Rpm",
+        "type": "float",
+        "init": 0.0,
+        "min": 0.0,
+        "max": 10000.0,
+        "unit": "rpm",
+        "comment": "motor speed"
+      },
+      {
+        "name": "Drive::Power",
+        "type": "float",
+        "init": 0.0,
+        "min": -60.0,
+        "max": 150.0,
+        "unit": "kW",
+        "comment": "motor power (< 0: regeneration)"
+      },
+      {
+        "name": "Drive::Odo",
+        "type": "float",
+        "init": 0.0,
+        "min": 0.0,
+        "unit": "km",
+        "comment": "trip"
+      }
+    ],
+    "panels": [
+      {
+        "name": "Drive",
+        "width": 900,
+        "height": 545,
+        "background": "",
+        "x": -208,
+        "y": -176,
+        "controls": [
+          {
+            "id": "title",
+            "type": "text",
+            "x": 16,
+            "y": 8,
+            "w": 600,
+            "h": 26,
+            "props": {
+              "text": "Drive demo — gear shift + pedals",
+              "align": "left",
+              "valign": "middle",
+              "word_wrap": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 13,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "hint",
+            "type": "text",
+            "x": 16,
+            "y": 34,
+            "w": 860,
+            "h": 20,
+            "props": {
+              "text": "Brake + POWER → READY.  Brake, then D or R.  Accelerator to drive.  P only below 3 km/h, D ↔ R below 5 km/h.",
+              "align": "left",
+              "valign": "middle",
+              "word_wrap": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "#6B7280",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "grpDriver",
+            "type": "group_box",
+            "x": 16,
+            "y": 60,
+            "w": 260,
+            "h": 470,
+            "props": {
+              "caption": "Driver",
+              "caption_align": "left",
+              "color": "",
+              "frame_width": 1,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "btnPower",
+            "type": "button",
+            "x": 16,
+            "y": 28,
+            "w": 120,
+            "h": 36,
+            "props": {
+              "symbol": "Drive::Ready",
+              "pressed_value": 1.0,
+              "released_value": 0.0,
+              "text": "POWER",
+              "color": "",
+              "active_color": "#2E7D32",
+              "mode": "toggle",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "ledReady",
+            "type": "led",
+            "x": 146,
+            "y": 34,
+            "w": 100,
+            "h": 24,
+            "props": {
+              "symbol": "Drive::Ready",
+              "on_when": "≠ 0",
+              "value": 1.0,
+              "caption": "READY",
+              "caption_side": "right",
+              "on_color": "#3CB043",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": false,
+              "blink_ms": 500,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "lblAccel",
+            "type": "text",
+            "x": 16,
+            "y": 80,
+            "w": 100,
+            "h": 20,
+            "props": {
+              "text": "Accelerator",
+              "align": "center",
+              "valign": "middle",
+              "word_wrap": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "lblBrake",
+            "type": "text",
+            "x": 136,
+            "y": 80,
+            "w": 100,
+            "h": 20,
+            "props": {
+              "text": "Brake",
+              "align": "center",
+              "valign": "middle",
+              "word_wrap": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "tbAccel",
+            "type": "trackbar",
+            "x": 40,
+            "y": 104,
+            "w": 60,
+            "h": 300,
+            "props": {
+              "symbol": "Drive::Accel",
+              "min": 0.0,
+              "max": 100.0,
+              "step": 1.0,
+              "show_value": true,
+              "orientation": "vertical",
+              "bar_color": "#2E7D32",
+              "show_ticks": true,
+              "tick_count": 10,
+              "live": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "tbBrake",
+            "type": "trackbar",
+            "x": 160,
+            "y": 104,
+            "w": 60,
+            "h": 300,
+            "props": {
+              "symbol": "Drive::Brake",
+              "min": 0.0,
+              "max": 100.0,
+              "step": 1.0,
+              "show_value": true,
+              "orientation": "vertical",
+              "bar_color": "#D32F2F",
+              "show_ticks": true,
+              "tick_count": 10,
+              "live": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "ledBrakeLamp",
+            "type": "led",
+            "x": 136,
+            "y": 410,
+            "w": 110,
+            "h": 22,
+            "props": {
+              "symbol": "Drive::BrakeLamp",
+              "on_when": "≠ 0",
+              "value": 1.0,
+              "caption": "Brake lamp",
+              "caption_side": "right",
+              "on_color": "#D32F2F",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": false,
+              "blink_ms": 500,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpDriver",
+            "page": 0
+          },
+          {
+            "id": "gSpeed",
+            "type": "gauge",
+            "x": 290,
+            "y": 60,
+            "w": 300,
+            "h": 240,
+            "props": {
+              "symbol": "Drive::Speed",
+              "min": 0.0,
+              "max": 200.0,
+              "decimals": 0,
+              "caption": "Speed",
+              "show_value": true,
+              "sweep": 240,
+              "ticks": 10,
+              "minor_ticks": 1,
+              "scale_color": "",
+              "needle_color": "#D32F2F",
+              "zones": true,
+              "warn_from": 130.0,
+              "alarm_from": 170.0,
+              "warn_color": "#F2A900",
+              "alarm_color": "#D32F2F",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "gRpm",
+            "type": "gauge",
+            "x": 600,
+            "y": 60,
+            "w": 280,
+            "h": 240,
+            "props": {
+              "symbol": "Drive::Rpm",
+              "min": 0.0,
+              "max": 10000.0,
+              "decimals": 0,
+              "caption": "Motor",
+              "show_value": true,
+              "sweep": 240,
+              "ticks": 10,
+              "minor_ticks": 1,
+              "scale_color": "",
+              "needle_color": "#D32F2F",
+              "zones": true,
+              "warn_from": 8000.0,
+              "alarm_from": 9000.0,
+              "warn_color": "#F2A900",
+              "alarm_color": "#D32F2F",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "grpGear",
+            "type": "group_box",
+            "x": 290,
+            "y": 310,
+            "w": 300,
+            "h": 220,
+            "props": {
+              "caption": "Gear lever",
+              "caption_align": "left",
+              "color": "",
+              "frame_width": 1,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "rbP",
+            "type": "radio_button",
+            "x": 16,
+            "y": 30,
+            "w": 64,
+            "h": 28,
+            "props": {
+              "symbol": "Drive::GearReq",
+              "value": 0.0,
+              "caption": "P",
+              "caption_side": "right",
+              "check_color": "#2F6FDE",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 13,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ledP",
+            "type": "led",
+            "x": 16,
+            "y": 64,
+            "w": 64,
+            "h": 22,
+            "props": {
+              "symbol": "Drive::Gear",
+              "on_when": "= value",
+              "value": 0.0,
+              "caption": "",
+              "caption_side": "right",
+              "on_color": "#2F6FDE",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": false,
+              "blink_ms": 500,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "rbR",
+            "type": "radio_button",
+            "x": 86,
+            "y": 30,
+            "w": 64,
+            "h": 28,
+            "props": {
+              "symbol": "Drive::GearReq",
+              "value": 1.0,
+              "caption": "R",
+              "caption_side": "right",
+              "check_color": "#2F6FDE",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 13,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ledR",
+            "type": "led",
+            "x": 86,
+            "y": 64,
+            "w": 64,
+            "h": 22,
+            "props": {
+              "symbol": "Drive::Gear",
+              "on_when": "= value",
+              "value": 1.0,
+              "caption": "",
+              "caption_side": "right",
+              "on_color": "#2F6FDE",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": false,
+              "blink_ms": 500,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "rbN",
+            "type": "radio_button",
+            "x": 156,
+            "y": 30,
+            "w": 64,
+            "h": 28,
+            "props": {
+              "symbol": "Drive::GearReq",
+              "value": 2.0,
+              "caption": "N",
+              "caption_side": "right",
+              "check_color": "#2F6FDE",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 13,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ledN",
+            "type": "led",
+            "x": 156,
+            "y": 64,
+            "w": 64,
+            "h": 22,
+            "props": {
+              "symbol": "Drive::Gear",
+              "on_when": "= value",
+              "value": 2.0,
+              "caption": "",
+              "caption_side": "right",
+              "on_color": "#2F6FDE",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": false,
+              "blink_ms": 500,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "rbD",
+            "type": "radio_button",
+            "x": 226,
+            "y": 30,
+            "w": 64,
+            "h": 28,
+            "props": {
+              "symbol": "Drive::GearReq",
+              "value": 3.0,
+              "caption": "D",
+              "caption_side": "right",
+              "check_color": "#2F6FDE",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 13,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ledD",
+            "type": "led",
+            "x": 226,
+            "y": 64,
+            "w": 64,
+            "h": 22,
+            "props": {
+              "symbol": "Drive::Gear",
+              "on_when": "= value",
+              "value": 3.0,
+              "caption": "",
+              "caption_side": "right",
+              "on_color": "#2F6FDE",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": false,
+              "blink_ms": 500,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ioGear",
+            "type": "io_box",
+            "x": 16,
+            "y": 96,
+            "w": 120,
+            "h": 44,
+            "props": {
+              "symbol": "Drive::GearText",
+              "format": "text",
+              "decimals": 2,
+              "show_unit": true,
+              "caption": "",
+              "caption_width": 0,
+              "value_align": "center",
+              "field_color": "",
+              "read_only": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 22,
+              "bold": true,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ledDenied",
+            "type": "led",
+            "x": 146,
+            "y": 106,
+            "w": 140,
+            "h": 24,
+            "props": {
+              "symbol": "Drive::Denied",
+              "on_when": "≠ 0",
+              "value": 1.0,
+              "caption": "Shift refused",
+              "caption_side": "right",
+              "on_color": "#D32F2F",
+              "off_color": "#5A5F66",
+              "shape": "round",
+              "led_size": 0,
+              "blink": true,
+              "blink_ms": 250,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "ioMsg",
+            "type": "io_box",
+            "x": 16,
+            "y": 152,
+            "w": 270,
+            "h": 26,
+            "props": {
+              "symbol": "Drive::Msg",
+              "format": "text",
+              "decimals": 2,
+              "show_unit": true,
+              "caption": "",
+              "caption_width": 0,
+              "value_align": "right",
+              "field_color": "",
+              "read_only": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpGear",
+            "page": 0
+          },
+          {
+            "id": "grpVeh",
+            "type": "group_box",
+            "x": 600,
+            "y": 310,
+            "w": 280,
+            "h": 220,
+            "props": {
+              "caption": "Vehicle",
+              "caption_align": "left",
+              "color": "",
+              "frame_width": 1,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            }
+          },
+          {
+            "id": "ioSpeed",
+            "type": "io_box",
+            "x": 16,
+            "y": 30,
+            "w": 248,
+            "h": 24,
+            "props": {
+              "symbol": "Drive::Speed",
+              "format": "float",
+              "decimals": 1,
+              "show_unit": true,
+              "caption": "Speed",
+              "caption_width": 70,
+              "value_align": "right",
+              "field_color": "",
+              "read_only": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpVeh",
+            "page": 0
+          },
+          {
+            "id": "ioPower",
+            "type": "io_box",
+            "x": 16,
+            "y": 62,
+            "w": 248,
+            "h": 24,
+            "props": {
+              "symbol": "Drive::Power",
+              "format": "float",
+              "decimals": 1,
+              "show_unit": true,
+              "caption": "Power",
+              "caption_width": 70,
+              "value_align": "right",
+              "field_color": "",
+              "read_only": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpVeh",
+            "page": 0
+          },
+          {
+            "id": "prPower",
+            "type": "progress",
+            "x": 16,
+            "y": 94,
+            "w": 248,
+            "h": 16,
+            "props": {
+              "symbol": "Drive::Power",
+              "min": -60.0,
+              "max": 150.0,
+              "show_text": true,
+              "text_format": "value",
+              "orientation": "horizontal",
+              "color": "#2E7D32",
+              "track_color": "",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpVeh",
+            "page": 0
+          },
+          {
+            "id": "ioOdo",
+            "type": "io_box",
+            "x": 16,
+            "y": 118,
+            "w": 248,
+            "h": 24,
+            "props": {
+              "symbol": "Drive::Odo",
+              "format": "float",
+              "decimals": 3,
+              "show_unit": true,
+              "caption": "Trip",
+              "caption_width": 70,
+              "value_align": "right",
+              "field_color": "",
+              "read_only": true,
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpVeh",
+            "page": 0
+          },
+          {
+            "id": "runStop",
+            "type": "start_stop",
+            "x": 16,
+            "y": 156,
+            "w": 248,
+            "h": 34,
+            "props": {
+              "text_start": "▶  Run",
+              "text_stop": "■  Stop",
+              "start_color": "#2E7D32",
+              "stop_color": "#C62828",
+              "tooltip": "",
+              "font_family": "",
+              "font_size": 9,
+              "bold": false,
+              "italic": false,
+              "text_color": "",
+              "background": "",
+              "border": "none",
+              "border_color": "",
+              "border_width": 1,
+              "corner_radius": 0,
+              "enabled_symbol": "",
+              "visible_symbol": ""
+            },
+            "parent": "grpVeh",
+            "page": 0
+          }
+        ]
+      }
+    ],
+    "current": 0
+  },
+  "sync": {
+    "b05d7deff70c": {
+      "name": "start",
+      "code": "@on_start\ndef start():\n    sysvar_set(\"Drive::Gear\", 0)\n    sysvar_set(\"Drive::GearReq\", 0)\n    sysvar_set(\"Drive::GearText\", \"P\")\n    sysvar_set(\"Drive::Msg\", \"Press the brake, then POWER\")\n    set_timer(\"phys\", 50)\n",
+      "text": "@on_start\ndef start():\n    sysvar_set(\"Drive::Gear\", 0)\n    sysvar_set(\"Drive::GearReq\", 0)\n    sysvar_set(\"Drive::GearText\", \"P\")\n    sysvar_set(\"Drive::Msg\", \"Press the brake, then POWER\")\n    set_timer(\"phys\", 50)"
+    },
+    "9b89bf3bd962": {
+      "name": "say",
+      "code": "def say(text, denied=False):\n    sysvar_set(\"Drive::Msg\", text)\n    if denied:\n        sysvar_set(\"Drive::Denied\", 1)\n        set_timer(\"denied\", 1500)\n        write((\"Shift refused: \" + text))\n",
+      "text": "def say(text, denied=False):\n    sysvar_set(\"Drive::Msg\", text)\n    if denied:\n        sysvar_set(\"Drive::Denied\", 1)\n        set_timer(\"denied\", 1500)\n        write(\"Shift refused: \" + text)"
+    },
+    "c0826be8126d": {
+      "name": "denied_off",
+      "code": "@on_timer(\"denied\")\ndef denied_off():\n    sysvar_set(\"Drive::Denied\", 0)\n",
+      "text": "@on_timer(\"denied\")\ndef denied_off():\n    sysvar_set(\"Drive::Denied\", 0)"
+    },
+    "11fbaccf60f7": {
+      "name": "power",
+      "code": "@on_sysvar(\"Drive::Ready\")\ndef power(value):\n    braking = (sysvar_get(\"Drive::Brake\") >= 10)\n    if (value and (not braking)):\n        sysvar_set(\"Drive::Ready\", 0)  # refused: back to off\n        say(\"Press the brake to start\", True)\n        return\n    if (bool(value) == powered):\n        return                                         # (the refusal above wrote 0 again)\n    powered = bool(value)\n    if value:\n        say(\"READY — brake, then D or R\")\n        write(\"READY\")\n    else:\n        if ((abs(v) * 3.6) < 3):\n            set_gear(0)\n        say(\"Power off\")\n        write(\"Power off\")\n",
+      "text": "@on_sysvar(\"Drive::Ready\")\ndef power(value):\n    braking = sysvar_get(\"Drive::Brake\") >= 10\n    if value and not braking:\n        sysvar_set(\"Drive::Ready\", 0)                 # refused: back to off\n        say(\"Press the brake to start\", True)\n        return\n    if bool(value) == powered:\n        return                                         # (the refusal above wrote 0 again)\n    powered = bool(value)\n    if value:\n        say(\"READY — brake, then D or R\")\n        write(\"READY\")\n    else:\n        if abs(v) * 3.6 < 3:\n            set_gear(0)\n        say(\"Power off\")\n        write(\"Power off\")"
+    },
+    "23cb69b5b793": {
+      "name": "set_gear",
+      "code": "def set_gear(g):\n    sysvar_set(\"Drive::Gear\", g)\n    sysvar_set(\"Drive::GearReq\", g)\n    sysvar_set(\"Drive::GearText\", GEARS[g])\n",
+      "text": "def set_gear(g):\n    sysvar_set(\"Drive::Gear\", g)\n    sysvar_set(\"Drive::GearReq\", g)\n    sysvar_set(\"Drive::GearText\", GEARS[g])"
+    },
+    "055eeec65573": {
+      "name": "shift",
+      "code": "@on_sysvar(\"Drive::GearReq\")\ndef shift(value):\n    req = int(value)\n    cur = int(sysvar_get(\"Drive::Gear\"))\n    if (req == cur):\n        return\n    speed = (abs(v) * 3.6)\n    braking = (sysvar_get(\"Drive::Brake\") >= 10)\n    ready = (sysvar_get(\"Drive::Ready\") == 1)\n    why = \"\"\n    if ((req == 0) and (speed >= 3)):\n        why = \"P only below 3 km/h\"\n    else:\n        if (({req, cur} == {1, 3}) and (speed >= 5)):\n            why = \"D <-> R only below 5 km/h\"\n        else:\n            if ((cur == 0) and (not ready)):\n                why = \"Not READY: press the brake and POWER\"\n            else:\n                if ((cur == 0) and (not braking)):\n                    why = \"Press the brake to leave P\"\n                else:\n                    if (req in (1, 3) and speed < 5 and not braking):\n                        why = (\"Press the brake to engage \" + GEARS[req])\n    if why:\n        sysvar_set(\"Drive::GearReq\", cur)  # the lever goes back\n        say(why, True)\n        return\n    set_gear(req)\n    say(\"Gear \" + GEARS[req])\n    write((\"Gear %s -> %s at %.1f km/h\" % ((GEARS[cur], GEARS[req], speed))))\n",
+      "text": "@on_sysvar(\"Drive::GearReq\")\ndef shift(value):\n    req = int(value)\n    cur = int(sysvar_get(\"Drive::Gear\"))\n    if req == cur:\n        return\n    speed = abs(v) * 3.6\n    braking = sysvar_get(\"Drive::Brake\") >= 10\n    ready = sysvar_get(\"Drive::Ready\") == 1\n    why = \"\"\n    if req == 0 and speed >= 3:\n        why = \"P only below 3 km/h\"\n    elif {req, cur} == {1, 3} and speed >= 5:\n        why = \"D <-> R only below 5 km/h\"\n    elif cur == 0 and not ready:\n        why = \"Not READY: press the brake and POWER\"\n    elif cur == 0 and not braking:\n        why = \"Press the brake to leave P\"\n    elif req in (1, 3) and speed < 5 and not braking:\n        why = \"Press the brake to engage \" + GEARS[req]\n    if why:\n        sysvar_set(\"Drive::GearReq\", cur)             # the lever goes back\n        say(why, True)\n        return\n    set_gear(req)\n    say(\"Gear \" + GEARS[req])\n    write(\"Gear %s -> %s at %.1f km/h\" % (GEARS[cur], GEARS[req], speed))"
+    },
+    "4a9b27ed6332": {
+      "name": "phys",
+      "code": "@on_timer(\"phys\")\ndef phys():\n    set_timer(\"phys\", 50)  # first: an error below must not stop it\n    dt = 0.05\n    ready = (sysvar_get(\"Drive::Ready\") == 1)\n    accel = (sysvar_get(\"Drive::Accel\") if ready else 0.0)\n    brake = sysvar_get(\"Drive::Brake\")\n    gear = int(sysvar_get(\"Drive::Gear\"))\n    direction = {1: -1, 3: 1}.get(gear, 0)  # R backwards, D forwards, P / N no drive\n    # drive force: less at high speed, R limited to about 30 km/h\n    top = (8.5 if gear == 1 else 55.0)\n    a_drive = ((((direction * accel) / 100) * 4.5) * max(0.0, 1 - abs(v) / top))\n    if (ready and direction and accel == 0 and brake < 5):  # creep like an automatic\n        a_drive = ((direction * 0.6) * max(0.0, 1 - abs(v) / 2.0))\n    v = (v + (a_drive * dt))\n    resist = (((((brake / 100) * 9.0) + 0.15) + ((0.0004 * v) * v)) * dt)\n    v = (0.0 if abs(v) <= resist else v - math.copysign(resist, v))\n    if (gear == 0):\n        v = 0.0  # parking pawl\n    odo = (odo + ((abs(v) * dt) / 1000))\n    power = (((MASS * a_drive) * v) / 1000)  # kW\n    if ((brake > 5) and (abs(v) > 0.5)):\n        power = (-min(60.0, MASS * brake / 100 * 9.0 * abs(v) / 1000 * 0.3))  # regeneration\n    sysvar_set(\"Drive::Speed\", (abs(v) * 3.6))\n    sysvar_set(\"Drive::Rpm\", min(10000.0, abs(v) * 160))\n    sysvar_set(\"Drive::Power\", max(-60.0, min(150.0, power)))\n    sysvar_set(\"Drive::Odo\", odo)\n    sysvar_set(\"Drive::BrakeLamp\", (1 if brake > 5 else 0))\n",
+      "text": "@on_timer(\"phys\")\ndef phys():\n    set_timer(\"phys\", 50)                              # first: an error below must not stop it\n    dt = 0.05\n    ready = sysvar_get(\"Drive::Ready\") == 1\n    accel = sysvar_get(\"Drive::Accel\") if ready else 0.0\n    brake = sysvar_get(\"Drive::Brake\")\n    gear = int(sysvar_get(\"Drive::Gear\"))\n    direction = {1: -1, 3: 1}.get(gear, 0)            # R backwards, D forwards, P / N no drive\n\n    # drive force: less at high speed, R limited to about 30 km/h\n    top = 8.5 if gear == 1 else 55.0\n    a_drive = direction * accel / 100 * 4.5 * max(0.0, 1 - abs(v) / top)\n    if ready and direction and accel == 0 and brake < 5:  # creep like an automatic\n        a_drive = direction * 0.6 * max(0.0, 1 - abs(v) / 2.0)\n\n    v = v + a_drive * dt\n    resist = (brake / 100 * 9.0 + 0.15 + 0.0004 * v * v) * dt\n    v = 0.0 if abs(v) <= resist else v - math.copysign(resist, v)\n    if gear == 0:\n        v = 0.0                                        # parking pawl\n    odo = odo + abs(v) * dt / 1000\n\n    power = MASS * a_drive * v / 1000                  # kW\n    if brake > 5 and abs(v) > 0.5:\n        power = -min(60.0, MASS * brake / 100 * 9.0 * abs(v) / 1000 * 0.3)   # regeneration\n\n    sysvar_set(\"Drive::Speed\", abs(v) * 3.6)\n    sysvar_set(\"Drive::Rpm\", min(10000.0, abs(v) * 160))\n    sysvar_set(\"Drive::Power\", max(-60.0, min(150.0, power)))\n    sysvar_set(\"Drive::Odo\", odo)\n    sysvar_set(\"Drive::BrakeLamp\", 1 if brake > 5 else 0)"
+    },
+    "aea184bce407": {
+      "name": "stop",
+      "code": "@on_stop\ndef stop():\n    write((\"Drive demo stopped, trip %.3f km\" % odo))\n",
+      "text": "@on_stop\ndef stop():\n    write(\"Drive demo stopped, trip %.3f km\" % odo)"
+    }
+  },
+  "capl": {
+    "channels": {},
+    "per_unit": true
+  },
+  "version": 1
+}
